@@ -11,12 +11,37 @@ namespace kg_lab1
         private int cenX;
         private int cenY;
         private Graphics _graphics;
+        private float offsetX = -250;
+        private float offsetY = -50;
+        private float offsetZ = 0;
+        private enum ActionType
+        {
+            MovePlusX,
+            MoveMinusX,
+            MovePlusY,
+            MoveMinusY,
+            MovePlusZ,
+            MoveMinusZ,
+            RotateRightX,
+            RotateRightY,
+            RotateRightZ,
+            RotateLeftX,
+            RotateLeftY,
+            RotateLeftZ
+        }
+
+        private ActionType? currentAction = null;
+        private Timer moveTimer;
 
         public MainForm() 
             => InitializeComponent();
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            moveTimer = new Timer();
+            moveTimer.Interval = 100; // Установите нужный интервал
+            moveTimer.Tick += MoveTimer_Tick; // Подписка на событие
+
             this.WindowState = FormWindowState.Maximized;
             cenX = Size.Width / 2;
             cenY = Size.Height / 2;
@@ -31,6 +56,53 @@ namespace kg_lab1
             };
             proection = p;
             DrawB();
+        }
+
+        private void MoveTimer_Tick(object sender, EventArgs e)
+        {
+            if (currentAction.HasValue)
+            {
+                switch (currentAction.Value)
+                {
+                    case ActionType.MovePlusX:
+                        MoveX(1);
+                        break;
+                    case ActionType.MoveMinusX:
+                        MoveX(-1);
+                        break;
+                    case ActionType.MovePlusY:
+                        MoveY(1);
+                        break;
+                    case ActionType.MoveMinusY:
+                        MoveY(-1);
+                        break;
+                    case ActionType.MovePlusZ:
+                        MoveZ(1);
+                        break;
+                    case ActionType.MoveMinusZ:
+                        MoveZ(-1);
+                        break;
+                    case ActionType.RotateRightX:
+                        RotateX(1);
+                        break;
+                    case ActionType.RotateLeftX:
+                        RotateX(-1);
+                        break;
+                    case ActionType.RotateRightY:
+                        RotateY(1);
+                        break;
+                    case ActionType.RotateLeftY:
+                        RotateY(-1);
+                        break;
+                    case ActionType.RotateRightZ:
+                        RotateZ(1);
+                        break;
+                    case ActionType.RotateLeftZ:
+                        RotateZ(-1);
+                        break;
+
+                }
+            }
         }
 
         //умножение матриц
@@ -49,18 +121,23 @@ namespace kg_lab1
         {
             _graphics = CreateGraphics();
             _graphics.Clear(Color.White);
+
+            float offsetX = -250;
+
+            float offsetY = -50;
+
             float[,] Axis =
             {
-                { 0, 0, 0, 1},
-                { 500, 0, 0, 1},
-                { 0, 400, 0, 1},
-                { 0, 0, 500, 1},
-                { 490, 5, 0, 1},
-                { 490, -5, 0, 1},
-                { 5, 390, 0, 1},
-                { -5, 390, 0, 1},
-                { 12, 0, 495, 1},
-                { -10, 0, 480, 1}
+                { offsetX, offsetY, 0, 1},          // Начало оси X
+                { offsetX + 500, offsetY, 0, 1},    // Конец оси X
+                { offsetX, offsetY + 400, 0, 1},     // Начало оси Y
+                { offsetX, offsetY, 500, 1},         // Начало оси Z
+                { offsetX + 490, offsetY + 5, 0, 1}, // Конец оси X стрелка
+                { offsetX + 490, offsetY - 5, 0, 1}, // Конец оси X стрелка
+                { offsetX + 5, offsetY + 390, 0, 1}, // Конец оси Y стрелка
+                { offsetX - 5, offsetY + 390, 0, 1}, // Конец оси Y стрелка
+                { offsetX + 12, offsetY, 495, 1},     // Конец оси Z стрелка
+                { offsetX - 10, offsetY, 480, 1}      // Конец оси Z стрелка
             };
             Axis = Mult(Axis, proection);
             #region X
@@ -85,57 +162,63 @@ namespace kg_lab1
         {
             float[,] DefB =
             {
-        { 0, 0, 0, 1 },         // |
-        { 0, 120, 0, 1 },       // _
-        { 40, 120, 0, 1 },      // \
-        { 60, 100, 0, 1 },      // |
-        { 60, 80, 0, 1 },       // /
-        { 40, 60, 0, 1 },       // \
-        { 0, 60, 0, 1 },
-        { 20, 80, 0, 1},
-        { 20, 100, 0, 1},
-        { 40, 100, 0, 1},
-        { 40, 80, 0, 1},
-        { 20, 80, 0, 1},
-         { 0, 60, 0, 1 },
-         { 40, 60, 0, 1 },
-        { 60, 40, 0, 1 },       // |
-        { 60, 20, 0, 1 },       // /
-        { 40, 0, 0, 1},
-        { 0, 0, 0, 1 },
-        { 20, 20, 0, 1},
-        { 20, 40, 0, 1},
-        { 40, 40, 0, 1},
-        { 40, 20, 0, 1},
-        { 20, 20, 0, 1},
-        { 0, 0, 0, 1},
-        { 0, 0, 10, 1 },         // |
-        { 0, 120, 10, 1 },       // _
-        { 40, 120, 10, 1 },      // \
-        { 60, 100, 10, 1 },      // |
-        { 60, 80, 10, 1 },       // /
-        { 40, 60, 10, 1 },       // \
-        { 0, 60, 10, 1 },
-        { 20, 80, 10, 1},
-        { 20, 100, 10, 1},
-        { 40, 100, 10, 1},
-        { 40, 80, 10, 1},
-        { 20, 80, 10, 1},
-         { 0, 60, 10, 1 },
-         { 40, 60, 10, 1 },
-        { 60, 40, 10, 1 },       // |
-        { 60, 20, 10, 1 },       // /
-        { 40, 0, 10, 1},
-        { 0, 0, 10, 1 },
-        { 20, 20, 10, 1},
-        { 20, 40, 10, 1},
-        { 40, 40, 10, 1},
-        { 40, 20, 10, 1},
-        { 20, 20, 10, 1},
-         { 0, 0, 10, 1 },
+                { 0, 0, 0, 1 },         // |
+                { 0, 120, 0, 1 },       // _
+                { 40, 120, 0, 1 },      // \
+                { 60, 100, 0, 1 },      // |
+                { 60, 80, 0, 1 },       // /
+                { 40, 60, 0, 1 },       // \
+                { 0, 60, 0, 1 },
+                { 20, 80, 0, 1},
+                { 20, 100, 0, 1},
+                { 40, 100, 0, 1},
+                { 40, 80, 0, 1},
+                { 20, 80, 0, 1},
+                { 0, 60, 0, 1 },
+                { 40, 60, 0, 1 },
+                { 60, 40, 0, 1 },       // |
+                { 60, 20, 0, 1 },       // /
+                { 40, 0, 0, 1},
+                { 0, 0, 0, 1 },
+                { 20, 20, 0, 1},
+                { 20, 40, 0, 1},
+                { 40, 40, 0, 1},
+                { 40, 20, 0, 1},
+                { 20, 20, 0, 1},
+                { 0, 0, 0, 1},
+                { 0, 0, 10, 1 },         // |
+                { 0, 120, 10, 1 },       // _
+                { 40, 120, 10, 1 },      // \
+                { 60, 100, 10, 1 },      // |
+                { 60, 80, 10, 1 },       // /
+                { 40, 60, 10, 1 },       // \
+                { 0, 60, 10, 1 },
+                { 20, 80, 10, 1},
+                { 20, 100, 10, 1},
+                { 40, 100, 10, 1},
+                { 40, 80, 10, 1},
+                { 20, 80, 10, 1},
+                { 0, 60, 10, 1 },
+                { 40, 60, 10, 1 },
+                { 60, 40, 10, 1 },       // |
+                { 60, 20, 10, 1 },       // /
+                { 40, 0, 10, 1},
+                { 0, 0, 10, 1 },
+                { 20, 20, 10, 1},
+                { 20, 40, 10, 1},
+                { 40, 40, 10, 1},
+                { 40, 20, 10, 1},
+                { 20, 20, 10, 1},
+                { 0, 0, 10, 1 },
 
 
-       };
+               };
+            for (int i = 0; i < DefB.GetLength(0); i++)
+            {
+                DefB[i, 0] += offsetX;
+                DefB[i, 1] += offsetY;
+                DefB[i, 2] += offsetZ; // Если используется Z, можно добавить
+            }
             B = DefB;
         }
 
@@ -162,9 +245,8 @@ namespace kg_lab1
             SetDefaultPosition();
             DrawB();
         }
-        private void MoveX (int mi)
+        private void MoveX (int toMove)
         {
-            int toMove = mi * Convert.ToInt32(MoveTextBox.Text);
             float[,] Move =
             {
                 { 1, 0, 0, 0},
@@ -175,20 +257,9 @@ namespace kg_lab1
             B = Mult(B, Move);
             DrawB();
         }
-        //движение вдоль OX в положительном направлении
-        private void MovePlusX_Click(object sender, EventArgs e)
-        {
-            MoveX(1);
-        }
 
-        //движение вдоль OX в отрицательном направлении
-        private void MoveMinusX_Click(object sender, EventArgs e)
+        private void MoveY(int toMove)
         {
-            MoveX(-1);
-        }
-        private void MoveY(int mi)
-        {
-            int toMove = mi * Convert.ToInt32(MoveTextBox.Text);
             float[,] Move =
             {
                 { 1, 0, 0, 0},
@@ -199,20 +270,9 @@ namespace kg_lab1
             B = Mult(B, Move);
             DrawB();
         }
-        //движение вдоль OY в положительном направлении
-        private void MovePlusY_Click(object sender, EventArgs e)
-        {
-            MoveY(1);
-        }
 
-        //движение вдоль OY в отрицательном направлении
-        private void MoveMinusY_Click(object sender, EventArgs e)
+        private void MoveZ(int toMove)
         {
-            MoveY(-1);
-        }
-        private void MoveZ(int mi)
-        {
-            int toMove = mi * Convert.ToInt32(MoveTextBox.Text);
             float[,] Move =
             {
                 { 1, 0, 0, 0},
@@ -223,161 +283,128 @@ namespace kg_lab1
             B = Mult(B, Move);
             DrawB();
         }
-        //движение вдоль OB в положительном направлении
-        private void MovePlusZ_Click(object sender, EventArgs e)
-        {
-            MoveZ(1);
-        }
 
-        //движение вдоль OB в отрицательном направлении
-        private void MoveMinusZ_Click(object sender, EventArgs e)
+        private void RotateX(int toRotate)
         {
-            MoveZ(-1);
-        }
-
-        //вращение вокруг OX вправо
-        private void RotateRightX_Click(object sender, EventArgs e)
-        {
-            int toRotate = Convert.ToInt32(RotateTextBox.Text);
-            //перевод в радианы
-            float angle = (float)(toRotate * Math.PI /180);
-            float[,] Rotate =
-            {
-                { 1, 0, 0, 0},
-                { 0, (float)(Math.Cos(angle)), (float)(Math.Sin(angle)), 0},
-                { 0, -(float)(Math.Sin(angle)), (float)(Math.Cos(angle)), 0},
-                { 0, 0, 0, 1}
-            };
-            B = Mult(B, Rotate);
-            DrawB();
-        }
-
-        //вращение вокруг OX влево
-        private void RotateLeftX_Click(object sender, EventArgs e)
-        {
-            int toRotate = Convert.ToInt32(RotateTextBox.Text);
             //перевод в радианы
             float angle = (float)(toRotate * Math.PI / 180);
             float[,] Rotate =
             {
                 { 1, 0, 0, 0},
-                { 0, (float)Math.Cos(angle), -((float)(Math.Sin(angle))), 0},
-                { 0, ((float)(Math.Sin(angle))), ((float)(Math.Cos(angle))), 0},
+                { 0, (float)(Math.Cos(angle)), ((float)(Math.Sin(angle))), 0},
+                { 0, (-1)*((float)(Math.Sin(angle))), (float)(Math.Cos(angle)), 0},
                 { 0, 0, 0, 1}
             };
+            // Сдвиг всех точек к началу координат
+            for (int i = 0; i < B.GetLength(0); i++)
+            {
+                B[i, 0] -= offsetX;
+                B[i, 1] -= offsetY;
+                B[i, 2] -= offsetZ; // Если используется Z, можно добавить
+            }
+
             B = Mult(B, Rotate);
+
+            for (int i = 0; i < B.GetLength(0); i++)
+            {
+                B[i, 0] += offsetX;
+                B[i, 1] += offsetY;
+                B[i, 2] += offsetZ; // Если используется Z, можно добавить
+            }
+
             DrawB();
         }
-
-        //вращение вокруг OY вправо
-        private void RotateRightY_Click(object sender, EventArgs e)
+        private void RotateY(int toRotate)
         {
-            int toRotate = Convert.ToInt32(RotateTextBox.Text);
             //перевод в радианы
             float angle = (float)(toRotate * Math.PI / 180);
             float[,] Rotate =
             {
                 { ((float)(Math.Cos(angle))), 0, ((float)(Math.Sin(angle))), 0},
                 { 0, 1, 0, 0},
-                { -((float)(Math.Sin(angle))), 0, ((float)(Math.Cos(angle))), 0},
+                { (-1)*((float)(Math.Sin(angle))), 0, ((float)(Math.Cos(angle))), 0},
                 { 0, 0, 0, 1}
             };
-            B = Mult(B, Rotate);
-            DrawB();
-        }
-
-        //вращение вокруг OY влево
-        private void RotateLeftY_Click(object sender, EventArgs e)
-        {
-            int toRotate = Convert.ToInt32(RotateTextBox.Text);
-            //перевод в радианы
-            float angle = (float)(toRotate * Math.PI / 180);
-            float[,] Rotate =
+            // Сдвиг всех точек к началу координат
+            for (int i = 0; i < B.GetLength(0); i++)
             {
-                { ((float)(Math.Cos(angle))), 0, -((float)(Math.Sin(angle))), 0},
-                { 0, 1, 0, 0},
-                { ((float)(Math.Sin(angle))), 0, ((float)(Math.Cos(angle))), 0},
-                { 0, 0, 0, 1}
-            };
-            B = Mult(B, Rotate);
-            DrawB();
-        }
+                B[i, 0] -= offsetX;
+                B[i, 1] -= offsetY;
+                B[i, 2] -= offsetZ; // Если используется Z, можно добавить
+            }
 
-        //вращение вокруг OB вправо
-        private void RotateRightZ_Click(object sender, EventArgs e)
-        {
-            int toRotate = Convert.ToInt32(RotateTextBox.Text);
-            //перевод в радианы
-            float angle = (float)(toRotate * Math.PI / 180);
-            float[,] Rotate =
+            B = Mult(B, Rotate);
+
+            for (int i = 0; i < B.GetLength(0); i++)
             {
-                { ((float)(Math.Cos(angle))), -((float)(Math.Sin(angle))), 0, 0},
-                { ((float)(Math.Sin(angle))), ((float)(Math.Cos(angle))), 0, 0},
-                { 0, 0, 1, 0},
-                { 0, 0, 0, 1}
-            };
-            B = Mult(B, Rotate);
+                B[i, 0] += offsetX;
+                B[i, 1] += offsetY;
+                B[i, 2] += offsetZ; // Если используется Z, можно добавить
+            }
             DrawB();
         }
-
-        //вращение вокруг OB влево
-        private void RotateLeftZ_Click(object sender, EventArgs e)
+        private void RotateZ(int toRotate)
         {
-            int toRotate = Convert.ToInt32(RotateTextBox.Text);
             //перевод в радианы
             float angle = (float)(toRotate * Math.PI / 180);
             float[,] Rotate =
             {
                 { ((float)(Math.Cos(angle))), ((float)(Math.Sin(angle))), 0, 0},
-                { -((float)(Math.Sin(angle))), ((float)(Math.Cos(angle))), 0, 0},
+                { (-1)*((float)(Math.Sin(angle))), ((float)(Math.Cos(angle))), 0, 0},
                 { 0, 0, 1, 0},
                 { 0, 0, 0, 1}
             };
+            // Сдвиг всех точек к началу координат
+            for (int i = 0; i < B.GetLength(0); i++)
+            {
+                B[i, 0] -= offsetX;
+                B[i, 1] -= offsetY;
+                B[i, 2] -= offsetZ; // Если используется Z, можно добавить
+            }
+
             B = Mult(B, Rotate);
+
+            for (int i = 0; i < B.GetLength(0); i++)
+            {
+                B[i, 0] += offsetX;
+                B[i, 1] += offsetY;
+                B[i, 2] += offsetZ; // Если используется Z, можно добавить
+            }
+            DrawB();
+        }
+
+        private void MirrotXYZ(int oX, int oY, int oZ)
+        {
+
+            float[,] Mirror =
+            {
+                { oZ, 0, 0, 0},
+                { 0, oY, 0, 0},
+                { 0, 0, oX, 0},
+                { 0, 0, 0, 1}
+            };
+            B = Mult(B, Mirror);
             DrawB();
         }
 
         //отражение относительно плоскости XY
         private void MirrorXY_Click(object sender, EventArgs e)
         {
-            float[,] Mirror =
-            {
-                { 1, 0, 0, 0},
-                { 0, 1, 0, 0},
-                { 0, 0, -1, 0},
-                { 0, 0, 0, 1}
-            };
-            B = Mult(B, Mirror);
-            DrawB();
+            MirrotXYZ(-1, 1, 1);
         }
 
         //отражение относительно плоскости XB
         private void MirrorXZ_Click(object sender, EventArgs e)
         {
-            float[,] Mirror =
-            {
-                { 1, 0, 0, 0},
-                { 0, -1, 0, 0},
-                { 0, 0, 1, 0},
-                { 0, 0, 0, 1}
-            };
-            B = Mult(B, Mirror);
-            DrawB();
+            MirrotXYZ(1, -1, 1);
         }
 
         //отражение относительно плоскости YB
         private void MirrorYZ_Click(object sender, EventArgs e)
         {
-            float[,] Mirror =
-            {
-                { -1, 0, 0, 0},
-                { 0, 1, 0, 0},
-                { 0, 0, 1, 0},
-                { 0, 0, 0, 1}
-            };
-            B = Mult(B, Mirror);
-            DrawB();
+            MirrotXYZ(1, 1, -1);
         }
+
         private void Stretch_func(double mi)
         {
             float[,] Stretch =
@@ -390,13 +417,94 @@ namespace kg_lab1
             B = Mult(B, Stretch);
             DrawB();
         }
+
         //растяжение
         private void Stretch_Click(object sender, EventArgs e)
         {
             Stretch_func(Convert.ToDouble(ScaleTB.Text));
         }
 
-        private void button1_Click(object sender, EventArgs e)
+
+        private void MovePlusX_MouseDown(object sender, MouseEventArgs e)
+        {
+            currentAction = ActionType.MovePlusX; // Задаем текущее действие
+            moveTimer.Start(); // Запускаем таймер
+        }
+
+        private void MoveMinusX_MouseDown(object sender, MouseEventArgs e)
+        {
+            currentAction = ActionType.MoveMinusX; // Задаем текущее действие
+            moveTimer.Start(); // Запускаем таймер
+        }
+
+
+        private void Current_MouseUp(object sender, MouseEventArgs e)
+        {
+            currentAction = null; // Сбрасываем текущее действие
+            moveTimer.Stop(); // Останавливаем таймер
+        }
+
+        private void MovePlusY_MouseDown(object sender, MouseEventArgs e)
+        {
+            currentAction = ActionType.MovePlusY; // Задаем текущее действие
+            moveTimer.Start(); // Запускаем таймер
+        }
+
+        private void MoveMinusY_MouseDown(object sender, MouseEventArgs e)
+        {
+            currentAction = ActionType.MoveMinusY; // Задаем текущее действие
+            moveTimer.Start(); // Запускаем таймер
+        }
+
+        private void MovePlusZ_MouseDown(object sender, MouseEventArgs e)
+        {
+            currentAction = ActionType.MovePlusZ; // Задаем текущее действие
+            moveTimer.Start(); // Запускаем таймер
+        }
+
+        private void MoveMinusZ_MouseDown(object sender, MouseEventArgs e)
+        {
+            currentAction = ActionType.MoveMinusZ; // Задаем текущее действие
+            moveTimer.Start(); // Запускаем таймер
+        }
+
+        private void RotateRightX_MouseDown(object sender, MouseEventArgs e)
+        {
+            currentAction = ActionType.RotateRightX; // Задаем текущее действие
+            moveTimer.Start(); // Запускаем таймер
+        }
+
+        private void RotateLeftX_MouseDown(object sender, MouseEventArgs e)
+        {
+            currentAction = ActionType.RotateLeftX; // Задаем текущее действие
+            moveTimer.Start(); // Запускаем таймер
+        }
+
+        private void RotateRightY_MouseDown(object sender, MouseEventArgs e)
+        {
+            currentAction = ActionType.RotateRightY; // Задаем текущее действие
+            moveTimer.Start(); // Запускаем таймер
+        }
+
+        private void RotateLeftY_MouseDown(object sender, MouseEventArgs e)
+        {
+            currentAction = ActionType.RotateLeftY; // Задаем текущее действие
+            moveTimer.Start(); // Запускаем таймер
+        }
+
+        private void RotateRightZ_MouseDown(object sender, MouseEventArgs e)
+        {
+            currentAction = ActionType.RotateRightZ; // Задаем текущее действие
+            moveTimer.Start(); // Запускаем таймер
+        }
+
+        private void RotateLeftZ_MouseDown(object sender, MouseEventArgs e)
+        {
+            currentAction = ActionType.RotateLeftZ; // Задаем текущее действие
+            moveTimer.Start(); // Запускаем таймер
+        }
+
+        private void MovingAPoint_Click(object sender, EventArgs e)
         {
             Random rand = new Random();
             int vertexIndex = rand.Next(0, B.GetLength(0)); // случайный выбор вершины
@@ -408,7 +516,7 @@ namespace kg_lab1
             int steps = 100; // количество шагов для анимации
             int count = 0;
             Timer timer = new Timer();
-            timer.Interval = 10; // задержка между шагами
+            timer.Interval = 1; // задержка между шагами
 
             timer.Tick += (o, ev) =>
             {
