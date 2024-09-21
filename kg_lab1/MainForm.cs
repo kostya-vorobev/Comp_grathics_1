@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Drawing;
+using System.Globalization;
 using System.Windows.Forms;
+using static System.Windows.Forms.AxHost;
 
 namespace kg_lab1
 {
@@ -414,14 +416,29 @@ namespace kg_lab1
                 { 0, 0,  (float)mi, 0},
                 { 0, 0, 0, 1}
             };
+            for (int i = 0; i < B.GetLength(0); i++)
+            {
+                B[i, 0] -= offsetX;
+                B[i, 1] -= offsetY;
+                B[i, 2] -= offsetZ; // Если используется Z, можно добавить
+            }
+
             B = Mult(B, Stretch);
+
+            for (int i = 0; i < B.GetLength(0); i++)
+            {
+                B[i, 0] += offsetX;
+                B[i, 1] += offsetY;
+                B[i, 2] += offsetZ; // Если используется Z, можно добавить
+            }
             DrawB();
         }
 
         //растяжение
         private void Stretch_Click(object sender, EventArgs e)
         {
-            Stretch_func(Convert.ToDouble(ScaleTB.Text));
+            string input = ScaleTB.Text.Trim().Replace('.', ','); // Замена точки на запятую
+            Stretch_func(Convert.ToDouble(input)); // Передача значения в функцию
         }
 
 
