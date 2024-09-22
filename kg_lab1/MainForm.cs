@@ -219,7 +219,7 @@ namespace kg_lab1
             {
                 DefB[i, 0] += offsetX;
                 DefB[i, 1] += offsetY;
-                DefB[i, 2] += offsetZ; // Если используется Z, можно добавить
+                DefB[i, 2] += offsetZ; 
             }
             B = DefB;
         }
@@ -236,9 +236,6 @@ namespace kg_lab1
                 _graphics.DrawLine(Pens.Red, matrixDraw[i + (B.Length / 8), 0], matrixDraw[i + (B.Length / 8), 1], matrixDraw[i + (B.Length / 8)+1, 0], matrixDraw[i + (B.Length / 8)+1, 1]);
                 _graphics.DrawLine(Pens.Red, matrixDraw[i, 0], matrixDraw[i, 1], matrixDraw[i + (B.Length / 8) , 0], matrixDraw[i + (B.Length / 8) , 1]);
             }
-            //_graphics.DrawLine(Pens.Red, matrixDraw[0, 0], matrixDraw[0, 1], matrixDraw[(B.Length / 8) - 1, 0], matrixDraw[(B.Length / 8) - 1, 1]);
-            //_graphics.DrawLine(Pens.Red, matrixDraw[(B.Length / 8) - 1 , 0], matrixDraw[(B.Length / 8) - 1, 1], matrixDraw[(B.Length / 4) - 1, 0], matrixDraw[(B.Length/4) - 1, 1]);
-            //_graphics.DrawLine(Pens.Red, matrixDraw[(B.Length / 8) - 1 , 0], matrixDraw[(B.Length / 8) - 1, 1], matrixDraw[(B.Length / 4) - 1, 0], matrixDraw[(B.Length / 4) - 1, 1]);
         }
 
         //поместить буквы начального размера в центр системы координат
@@ -302,7 +299,7 @@ namespace kg_lab1
             {
                 B[i, 0] -= offsetX;
                 B[i, 1] -= offsetY;
-                B[i, 2] -= offsetZ; // Если используется Z, можно добавить
+                B[i, 2] -= offsetZ; 
             }
 
             B = Mult(B, Rotate);
@@ -311,7 +308,7 @@ namespace kg_lab1
             {
                 B[i, 0] += offsetX;
                 B[i, 1] += offsetY;
-                B[i, 2] += offsetZ; // Если используется Z, можно добавить
+                B[i, 2] += offsetZ; 
             }
 
             DrawB();
@@ -332,7 +329,7 @@ namespace kg_lab1
             {
                 B[i, 0] -= offsetX;
                 B[i, 1] -= offsetY;
-                B[i, 2] -= offsetZ; // Если используется Z, можно добавить
+                B[i, 2] -= offsetZ; 
             }
 
             B = Mult(B, Rotate);
@@ -341,7 +338,7 @@ namespace kg_lab1
             {
                 B[i, 0] += offsetX;
                 B[i, 1] += offsetY;
-                B[i, 2] += offsetZ; // Если используется Z, можно добавить
+                B[i, 2] += offsetZ; 
             }
             DrawB();
         }
@@ -361,7 +358,7 @@ namespace kg_lab1
             {
                 B[i, 0] -= offsetX;
                 B[i, 1] -= offsetY;
-                B[i, 2] -= offsetZ; // Если используется Z, можно добавить
+                B[i, 2] -= offsetZ; 
             }
 
             B = Mult(B, Rotate);
@@ -370,7 +367,7 @@ namespace kg_lab1
             {
                 B[i, 0] += offsetX;
                 B[i, 1] += offsetY;
-                B[i, 2] += offsetZ; // Если используется Z, можно добавить
+                B[i, 2] += offsetZ; 
             }
             DrawB();
         }
@@ -420,7 +417,7 @@ namespace kg_lab1
             {
                 B[i, 0] -= offsetX;
                 B[i, 1] -= offsetY;
-                B[i, 2] -= offsetZ; // Если используется Z, можно добавить
+                B[i, 2] -= offsetZ; 
             }
 
             B = Mult(B, Stretch);
@@ -429,7 +426,7 @@ namespace kg_lab1
             {
                 B[i, 0] += offsetX;
                 B[i, 1] += offsetY;
-                B[i, 2] += offsetZ; // Если используется Z, можно добавить
+                B[i, 2] += offsetZ; 
             }
             DrawB();
         }
